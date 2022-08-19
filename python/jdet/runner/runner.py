@@ -96,7 +96,7 @@ class Runner:
         for batch_idx,(images,targets) in enumerate(self.train_dataset):
             break
         print("warmup...")
-        for i in tqdm(range(warmup)):
+        for i in tqdm(range(warmup), ascii=True):
             losses = self.model(images,targets)
             all_loss,losses = parse_losses(losses)
             self.optimizer.step(all_loss)
@@ -104,7 +104,7 @@ class Runner:
         jt.sync_all(True)
         print("testing...")
         start_time = time.time()
-        for i in tqdm(range(rerun)):
+        for i in tqdm(range(rerun), ascii=True):
             losses = self.model(images,targets)
             all_loss,losses = parse_losses(losses)
             self.optimizer.step(all_loss)
@@ -162,7 +162,7 @@ class Runner:
         if save_dir:
             os.makedirs(save_dir, exist_ok=True)
         self.model.eval()
-        for i,(images,targets) in tqdm(enumerate(self.test_dataset)):
+        for i,(images,targets) in tqdm(enumerate(self.test_dataset), ascii=True):
             results = self.model(images,targets)
             if save_dir:
                 visualize_results(sync(results),get_classes_by_name(self.test_dataset.dataset_type),[t["img_file"] for t in targets],save_dir, **kwargs)
@@ -179,7 +179,7 @@ class Runner:
             #if model.is_training():
             #    model.eval()
             results = []
-            for batch_idx,(images,targets) in tqdm(enumerate(self.val_dataset),total=len(self.val_dataset)):
+            for batch_idx,(images,targets) in tqdm(enumerate(self.val_dataset),total=len(self.val_dataset), ascii=True):
                 result = self.model(images,targets)
                 results.extend([(r,t) for r,t in zip(sync(result),sync(targets))])
             eval_results = self.val_dataset.evaluate(results,self.work_dir,self.epoch,logger=self.logger)
@@ -196,7 +196,7 @@ class Runner:
             self.logger.print_log("Testing...")
             self.model.eval()
             results = []
-            for batch_idx,(images,targets) in tqdm(enumerate(self.test_dataset),total=len(self.test_dataset)):
+            for batch_idx,(images,targets) in tqdm(enumerate(self.test_dataset),total=len(self.test_dataset), ascii=True):
                 result = self.model(images,targets)
                 results.extend([(r,t) for r,t in zip(sync(result),sync(targets))])
                 for mode in self.flip_test:

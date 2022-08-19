@@ -232,7 +232,7 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
         # Display cache
         [nf, nm, ne, nc, n] = cache.pop('results')  # found, missing, empty, corrupted, total
         desc = f"Scanning '{cache_path}' for images and labels... {nf} found, {nm} missing, {ne} empty, {nc} corrupted"
-        tqdm(None, desc=prefix + desc, total=n, initial=n)
+        tqdm(None, desc=prefix + desc, total=n, initial=n, ascii=True)
         assert nf > 0 or not augment, f'{prefix}No labels in {cache_path}. Can not train without labels. See {help_url}'
 
         # Read cache
@@ -283,7 +283,7 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
             gb = 0  # Gigabytes of cached images
             self.img_hw0, self.img_hw = [None] * n, [None] * n
             results = ThreadPool(8).imap(lambda x: load_image(*x), zip(repeat(self), range(n)))  # 8 threads
-            pbar = tqdm(enumerate(results), total=n)
+            pbar = tqdm(enumerate(results), total=n, ascii=True)
             for i, x in pbar:
                 self.imgs[i], self.img_hw0[i], self.img_hw[i] = x  # img, hw_original, hw_resized = load_image(self, i)
                 gb += self.imgs[i].nbytes
@@ -295,7 +295,7 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
         # Cache dataset labels, check images and read shapes
         x = {}  # dict
         nm, nf, ne, nc = 0, 0, 0, 0  # number missing, found, empty, duplicate
-        pbar = tqdm(zip(self.img_files, self.label_files), desc='Scanning images', total=len(self.img_files))
+        pbar = tqdm(zip(self.img_files, self.label_files), desc='Scanning images', total=len(self.img_files), ascii=True)
         for i, (im_file, lb_file) in enumerate(pbar):
             try:
                 # verify images
@@ -473,7 +473,7 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
         p, r, f1, mp, mr, map50, map, t0, t1 = 0., 0., 0., 0., 0., 0., 0., 0., 0.
         loss = jt.zeros((3,))
         jdict, stats, ap, ap_class = [], [], [], []
-        for batch_i, (output, labels) in enumerate(tqdm(results)):
+        for batch_i, (output, labels) in enumerate(tqdm(results, ascii=True)):
             nb = len(output)
             metas = [labels[labels[:, 0] == i][:2] for i in range(nb)]
             targets = jt.contrib.concat([jt.array(labels[labels[:, 0] == i][2:]) for i in range(nb)], 0)
@@ -841,7 +841,7 @@ def flatten_recursive(path='../coco128'):
     # Flatten a recursive directory by bringing all files to top level
     new_path = Path(path + '_flat')
     create_folder(new_path)
-    for file in tqdm(glob.glob(str(Path(path)) + '/**/*.*', recursive=True)):
+    for file in tqdm(glob.glob(str(Path(path)) + '/**/*.*', recursive=True), ascii=True):
         shutil.copyfile(file, new_path / Path(file).name)
 
 
@@ -852,7 +852,7 @@ def extract_boxes(path='../coco128/'):  # from utils.datasets import *; extract_
     shutil.rmtree(path / 'classifier') if (path / 'classifier').is_dir() else None  # remove existing
     files = list(path.rglob('*.*'))
     n = len(files)  # number of files
-    for im_file in tqdm(files, total=n):
+    for im_file in tqdm(files, total=n, ascii=True):
         if im_file.suffix[1:] in img_formats:
             # image
             im = cv2.imread(str(im_file))[..., ::-1]  # BGR to RGB
@@ -892,7 +892,7 @@ def autosplit(path='../coco128', weights=(0.9, 0.1, 0.0)):  # from utils.dataset
     indices = random.choices([0, 1, 2], weights=weights, k=n)  # assign each image to a split
     txt = ['autosplit_train.txt', 'autosplit_val.txt', 'autosplit_test.txt']  # 3 txt files
     [(path / x).unlink() for x in txt if (path / x).exists()]  # remove existing
-    for i, img in tqdm(zip(indices, files), total=n):
+    for i, img in tqdm(zip(indices, files), total=n, ascii=True):
         if img.suffix[1:] in img_formats:
             with open(path / txt[i], 'a') as f:
                 f.write(str(img) + '\n')  # add image to txt file

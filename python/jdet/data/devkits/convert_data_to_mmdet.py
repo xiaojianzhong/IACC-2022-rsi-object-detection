@@ -45,7 +45,7 @@ def convert_data_to_mmdet(src_path, out_path, trainval=True, filter_empty_gt=Tru
     img_lists.sort()
 
     data_dict = []
-    for img in tqdm(img_lists):
+    for img in tqdm(img_lists, ascii=True):
         img_info = {}
         img_name = osp.splitext(img)[0]
         label = os.path.join(label_path, img_name + '.txt')

@@ -54,7 +54,7 @@ def visualize_dota(dota_dir,image_dir,save_dir):
 
 def visualize_results(results,classnames,files,save_dir,**kwargs):
     os.makedirs(save_dir,exist_ok=True)
-    for (bboxes, scores, labels),img_file in tqdm(zip(results,files)):
+    for (bboxes, scores, labels),img_file in tqdm(zip(results,files), ascii=True):
         save_file = os.path.join(save_dir,os.path.split(img_file)[-1])
         draw_bboxes(img_file,bboxes,labels=labels,scores=scores,class_names=classnames,out_file=save_file,**kwargs)
 
@@ -76,7 +76,7 @@ def visualize_dota_ground_truth(gt_dir, classnames, save_dir,style=0):
             names.append(f[:-4])
     results = []
     files = []
-    for i in tqdm(range(len(names))):
+    for i in tqdm(range(len(names)), ascii=True):
         files.append(os.path.join(img_dir, names[i] + '.png'))
         datas = open(os.path.join(anno_dir, names[i] + '.txt')).readlines()
         bboxes = []

@@ -54,7 +54,7 @@ def ssdd_to_dota(img_path, anno_path, target_path, resize, plus):
     out_anno_path = os.path.join(target_path, "labelTxt")
     os.makedirs(out_img_path, exist_ok=True)
     os.makedirs(out_anno_path, exist_ok=True)
-    for i in tqdm(range(len(names))):
+    for i in tqdm(range(len(names)), ascii=True):
         name = names[i]
         img = cv2.imread(os.path.join(img_path, name+".jpg"))
         h, w, _ = img.shape

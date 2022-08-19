@@ -30,7 +30,7 @@ def prepare_data(result_pkl,save_path, classes):
     check_dir(save_path)
     results = jt.load(result_pkl)
     data = {}
-    for result,target in tqdm(results):
+    for result,target in tqdm(results, ascii=True):
         img_name = os.path.splitext(os.path.split(target["img_file"])[-1])[0]
         for bbox,score,label in zip(*result):
             classname = classes[label]

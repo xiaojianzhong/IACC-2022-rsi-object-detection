@@ -45,7 +45,7 @@ def fair_to_dota(in_path, out_path):
             tar=os.path.join(out_path,"images", tar)
             tasks.append((src, tar))
     print("processing images")
-    for task in tqdm(tasks):
+    for task in tqdm(tasks, ascii=True):
         file = cv2.imread(task[0], 1)
         cv2.imwrite(task[1], file)
 
@@ -59,7 +59,7 @@ def fair_to_dota(in_path, out_path):
                 tar=os.path.join(out_path,"labelTxt", tar)
                 tasks.append((src, tar))
         print("processing labels")
-        for task in tqdm(tasks):
+        for task in tqdm(tasks, ascii=True):
             solve_xml(task[0], task[1])
 
 if __name__ == '__main__':
