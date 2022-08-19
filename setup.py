@@ -29,7 +29,7 @@ setup(
         "astunparse",
         "jittor",
         "tensorboardX",
-        "opencv-python",
+        "opencv-python-headless",
         "tqdm",
         "terminaltables",
     ],
